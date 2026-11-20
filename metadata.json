@@ -1,0 +1,6 @@
+{
+  "name": "Ekklesia Tesorería",
+  "description": "Sistema de gestión de tesorería para iglesias cristianas con registro en tiempo real de diezmos, ofrendas, gastos, actas de conteo y auxiliares.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

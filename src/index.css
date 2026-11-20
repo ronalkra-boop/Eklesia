@@ -1,0 +1,44 @@
+@import "tailwindcss";
+
+:root {
+  /* Escala tipográfica base: incrementada ~3 puntos para lectura cómoda sin alterar el diseño */
+  font-size: 18px;
+  -webkit-text-size-adjust: 100%;
+  text-rendering: optimizeLegibility;
+}
+
+@media (max-width: 768px) {
+  :root {
+    /* En celulares: incremento de ~3 puntos para que todo el texto sea claro y nítido */
+    font-size: 19.5px;
+  }
+}
+
+/* Evitar zoom molesto en iOS y asegurar tamaño legible en campos de texto en celular */
+@media (max-width: 768px) {
+  input, select, textarea {
+    font-size: 16px !important;
+  }
+}
+
+/* Elevar los textos que tenían clases en píxeles fijos muy diminutos (10px y 11px) */
+.text-\[10px\] {
+  font-size: 0.72rem !important; /* ~14px en celular */
+  line-height: 1.15rem !important;
+}
+
+.text-\[11px\] {
+  font-size: 0.78rem !important; /* ~15px en celular */
+  line-height: 1.25rem !important;
+}
+
+@media (max-width: 768px) {
+  .text-xs {
+    font-size: 0.82rem !important; /* ~16px en celular en lugar de 12px */
+    line-height: 1.3rem !important;
+  }
+  .text-sm {
+    font-size: 0.92rem !important; /* ~18px en celular en lugar de 14px */
+    line-height: 1.4rem !important;
+  }
+}

@@ -1,0 +1,118 @@
+{
+  "entities": {
+    "Transaction": {
+      "title": "Transaction",
+      "description": "Registro financiero de ingreso (diezmo, ofrenda) o egreso eclesiástico.",
+      "type": "object",
+      "properties": {
+        "type": { "type": "string", "enum": ["income", "expense"], "description": "Tipo de transacción" },
+        "category": { "type": "string", "description": "Categoría eclesiástica" },
+        "amount": { "type": "number", "description": "Monto de la transacción" },
+        "date": { "type": "string", "description": "Fecha del movimiento YYYY-MM-DD" },
+        "serviceName": { "type": "string", "description": "Culto o actividad de la iglesia" },
+        "memberOrPayee": { "type": "string", "description": "Nombre de feligrés o proveedor" },
+        "paymentMethod": { "type": "string", "description": "Forma de pago (efectivo, transferencia, etc.)" },
+        "receiptNumber": { "type": "string", "description": "Número de sobre o recibo" },
+        "description": { "type": "string", "description": "Detalle del movimiento" },
+        "recordedBy": { "type": "string", "description": "Nombre del auxiliar o tesorero" },
+        "recordedByUid": { "type": "string", "description": "UID de usuario de autenticación" },
+        "status": { "type": "string", "enum": ["aprobado", "pendiente_revision"], "description": "Estado de verificación" },
+        "actaId": { "type": "string", "description": "ID del acta de conteo si aplica" },
+        "createdAt": { "type": "string", "description": "Fecha y hora de creación ISO" },
+        "updatedAt": { "type": "string", "description": "Fecha y hora de actualización ISO" }
+      },
+      "required": ["type", "category", "amount", "date", "recordedBy", "recordedByUid"]
+    },
+    "ActaConteo": {
+      "title": "ActaConteo",
+      "description": "Acta de arqueo y conteo de ofrendas realizada por auxiliares y tesorero al finalizar el culto.",
+      "type": "object",
+      "properties": {
+        "serviceName": { "type": "string", "description": "Nombre del culto" },
+        "date": { "type": "string", "description": "Fecha del culto YYYY-MM-DD" },
+        "auxiliar1": { "type": "string", "description": "Nombre del primer auxiliar que contó" },
+        "auxiliar2": { "type": "string", "description": "Nombre del segundo auxiliar que contó" },
+        "tesorero": { "type": "string", "description": "Nombre del tesorero que supervisó" },
+        "bills": { "type": "object", "description": "Desglose por denominación de billetes" },
+        "coins": { "type": "object", "description": "Desglose por denominación de monedas" },
+        "transfersAmount": { "type": "number", "description": "Monto recaudado por transferencias/banco" },
+        "totalDiezmos": { "type": "number", "description": "Total registrado en sobres de diezmo" },
+        "totalOfrendas": { "type": "number", "description": "Total de ofrendas sueltas de alfolí" },
+        "totalEspeciales": { "type": "number", "description": "Total de ofrendas pro-templo o misiones" },
+        "grandTotal": { "type": "number", "description": "Total general del conteo" },
+        "observations": { "type": "string", "description": "Novedades u observaciones del arqueo" },
+        "recordedByUid": { "type": "string", "description": "UID de quien registró el acta" },
+        "createdAt": { "type": "string", "description": "Fecha de registro ISO" }
+      },
+      "required": ["serviceName", "date", "auxiliar1", "grandTotal", "recordedByUid"]
+    },
+    "Member": {
+      "title": "Member",
+      "description": "Miembro o feligrés de la iglesia para registro de diezmos y constancias.",
+      "type": "object",
+      "properties": {
+        "fullName": { "type": "string", "description": "Nombre y apellidos completos" },
+        "documentNumber": { "type": "string", "description": "Identificación o cédula" },
+        "phone": { "type": "string", "description": "Teléfono de contacto" },
+        "email": { "type": "string", "description": "Correo electrónico" },
+        "ministry": { "type": "string", "description": "Ministerio al que pertenece" },
+        "active": { "type": "boolean", "description": "Estado activo en membresía" },
+        "createdAt": { "type": "string", "description": "Fecha de registro" }
+      },
+      "required": ["fullName"]
+    },
+    "ChurchConfig": {
+      "title": "ChurchConfig",
+      "description": "Configuración institucional de la iglesia y formato denominacional.",
+      "type": "object",
+      "properties": {
+        "churchName": { "type": "string", "description": "Nombre oficial de la congregación" },
+        "denomination": { "type": "string", "description": "Denominación o misión eclesiástica" },
+        "district": { "type": "string", "description": "Distrito, presbiterio o zona" },
+        "pastorName": { "type": "string", "description": "Pastor titular" },
+        "tesoreroName": { "type": "string", "description": "Tesorero principal" },
+        "currency": { "type": "string", "description": "Moneda oficial de la iglesia" },
+        "tithePercentageToDenomination": { "type": "number", "description": "Porcentaje diezmo de diezmos a sede nacional" },
+        "updatedAt": { "type": "string", "description": "Última actualización" }
+      },
+      "required": ["churchName"]
+    },
+    "UserCredential": {
+      "title": "UserCredential",
+      "description": "Credenciales y contraseña personal para cada miembro del equipo de tesorería.",
+      "type": "object",
+      "properties": {
+        "roleId": { "type": "string", "enum": ["tesorero", "auxiliar1", "auxiliar2", "pastor"], "description": "Identificador de rol" },
+        "roleName": { "type": "string", "description": "Nombre del rol oficial" },
+        "userName": { "type": "string", "description": "Nombre de la persona asignada" },
+        "passwordHash": { "type": "string", "description": "Hash criptográfico SHA-256 de la contraseña" },
+        "isDefault": { "type": "boolean", "description": "Indica si aún utiliza la clave inicial por defecto" },
+        "updatedAt": { "type": "string", "description": "Fecha de actualización ISO" }
+      },
+      "required": ["roleId", "roleName", "passwordHash"]
+    }
+  },
+  "firestore": {
+    "/transactions/{transactionId}": {
+      "schema": { "$ref": "#/entities/Transaction" },
+      "description": "Colección de ingresos y egresos de la tesorería"
+    },
+    "/actasConteo/{actaId}": {
+      "schema": { "$ref": "#/entities/ActaConteo" },
+      "description": "Colección de actas de conteo y arqueo de cultos"
+    },
+    "/members/{memberId}": {
+      "schema": { "$ref": "#/entities/Member" },
+      "description": "Directorio de miembros y feligreses de la congregación"
+    },
+    "/churchConfig/{configId}": {
+      "schema": { "$ref": "#/entities/ChurchConfig" },
+      "description": "Datos institucionales y configuración de la denominación"
+    },
+    "/userCredentials/{roleId}": {
+      "schema": { "$ref": "#/entities/UserCredential" },
+      "description": "Contraseñas personales y seguridad de los usuarios del equipo de tesorería"
+    }
+  }
+}
+
